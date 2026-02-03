@@ -1,0 +1,28 @@
+# --- Python Basics ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Distribution / Packaging (The part you asked about) ---
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# --- Virtual Environments ---
+venv/
+.venv/
+env/
+
+# --- Environmental Variables ---
+.env
+.env.local
+
+# --- Vector Database (Chroma creates local folders) ---
+chroma_db/
+chroma_data/
+
+# --- IDE Settings ---
+.vscode/
+.idea/
+.DS_Store
