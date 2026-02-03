@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "comparative-analyst-agent"
+version = "0.1.0"
+description = "A local AI agent for extracting structured data from unstructured financial documents."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  {name = "kenji"}
+]
+dependencies = [
+    "langchain-ollama",
+    "langchain-chroma",
+    "langchain-core",
+    "pandas",
+    "streamlit"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]  # This tells pip to look for packages (like 'src') in the root
+include = ["src*"]
