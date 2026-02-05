@@ -21,6 +21,7 @@ env/
 # --- Vector Database (Chroma creates local folders) ---
 chroma_db/
 chroma_data/
+test_chroma_db/
 
 # --- IDE Settings ---
 .vscode/

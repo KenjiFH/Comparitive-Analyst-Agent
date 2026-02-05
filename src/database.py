@@ -9,7 +9,7 @@ class VectorDatabase:
     """
     Manages the local vector store (ChromaDB) and embedding generation.
     """
-    
+    #we could decouple innit by putting the db and model init in a diff fucntion
     def __init__(self, persist_directory: str = "chroma_db"):
         """
         Initialize the Vector Database.
@@ -84,7 +84,8 @@ class VectorDatabase:
         except Exception as e:
             print(f"An error occurred: {e}")
         
-   
+#this just checks if the chroma db already exists and deletes it if i does does nothing if not
+#this same func should be put in the actual prod folder to clear the db
 def check_clear_database():
         """
         Utility to wipe the database clean (Good for testing). if the dir exists
@@ -120,7 +121,7 @@ if __name__ == "__main__":
     
     #vdb.clear_database() dont clear before you make it
     
-    # 2. Create Dummy Data
+    # Create Dummy Data
     dummy_txt1 = vdb.create_txt_file_test("data/txt_files_med_test/report1_L.txt")
     dummy_txt2 = vdb.create_txt_file_test("data/txt_files_med_test/report2_L.txt")
     dummy_txt3 = vdb.create_txt_file_test("data/txt_files_med_test/report3_L.txt")
@@ -141,10 +142,10 @@ if __name__ == "__main__":
         )
     ]
     
-    # 3. Test Ingestion
+    # Test Ingestion
     vdb.add_documents(dummy_docs)
     
-    # 4. Test Retrieval
+    # Test Retrieval
     query = "What is the revenue of Apex Technologies?"
     results = vdb.retrieve(query, k=2)
     
