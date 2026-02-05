@@ -22,6 +22,7 @@ env/
 chroma_db/
 chroma_data/
 test_chroma_db/
+analysis_results.csv
 
 # --- IDE Settings ---
 .vscode/

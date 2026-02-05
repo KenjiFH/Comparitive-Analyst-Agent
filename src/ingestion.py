@@ -48,6 +48,7 @@ def load_and_chunk_documents(data_dir: str = "data/raw_docs") -> list[Document]:
 
             # 4. Create Documents and Split
             # We explicitly add the 'source' metadata so we know which file came from where
+            #TODO update to tag fy, quarter etc
             raw_doc = Document(
                 page_content=text_content,
                 metadata={"source": file_path.name} 

@@ -106,25 +106,14 @@ class AnalystAgent:
     
 
 
-def check_clear_database():
-        """
-        Utility to wipe the database clean (Good for testing). if the dir exists
-        """
-        test_db_dir = "chroma_db"
-        db_existed_before = pathlib.Path(test_db_dir).exists()
-        path = pathlib.Path(test_db_dir)
-        if db_existed_before:
-            # Recursively delete the directory
-            shutil.rmtree(path)
-            print("🧹 Database cleared (files removed).")
-        else:  
-            print("db did not exist before")
+
 
 # --- TICKET TEST BLOCK ---
 if __name__ == "__main__":
     print("🧪 STARTING TEST: Full Analyst Pipeline\n")
     
     # 1. Setup
+   
     agent = AnalystAgent()
     
     # Note: This relies on the data we loaded in Ticket 3/Test Scripts.
@@ -147,7 +136,7 @@ if __name__ == "__main__":
         print("-" * 30)
         
         # Acceptance Criteria Checks
-        if result.get("Revenue") and "50 Million" in result["Revenue"]:
+        if result.get("Revenue") and "$4.2 billion" in result["Revenue"] and result.get("CEO") and "Elena Rostova" in result["CEO"]:
             print("\n✅ TICKET COMPLETE: Revenue extracted correctly.")
             print("✅ Dictionary created successfully.")
         else:
