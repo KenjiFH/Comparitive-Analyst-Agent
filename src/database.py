@@ -10,7 +10,8 @@ class VectorDatabase:
     Manages the local vector store (ChromaDB) and embedding generation.
     """
     #we could decouple innit by putting the db and model init in a diff fucntion
-    def __init__(self, persist_directory: str = "chroma_db"):
+    def __init__(self, persist_directory: str):
+        
         """
         Initialize the Vector Database.
         
@@ -100,7 +101,15 @@ def check_clear_database():
         else:  
             print("db did not exist before")
 
+
+
+def test_files_large() -> list[Document]:
+    pass
+def test_files_med() -> list[Document]:
+    pass
+
 # --- TICKET TEST BLOCK ---
+#
 if __name__ == "__main__":
     print("🧪 STARTING TEST: Vector Database Pipeline (mxbai-embed-large)\n")
     
@@ -125,6 +134,8 @@ if __name__ == "__main__":
     dummy_txt1 = vdb.create_txt_file_test("data/txt_files_med_test/report1_L.txt")
     dummy_txt2 = vdb.create_txt_file_test("data/txt_files_med_test/report2_L.txt")
     dummy_txt3 = vdb.create_txt_file_test("data/txt_files_med_test/report3_L.txt")
+
+
     
     
     dummy_docs = [

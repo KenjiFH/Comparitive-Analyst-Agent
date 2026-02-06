@@ -9,15 +9,64 @@ class AnalystAgent:
     """
     Orchestrates the LLM and Vector Database to analyze documents.
     """
-    
-    def __init__(self):
+    #TODO pass a VDB object in as a reference, an agent should not OWN a database
+    def __init__(self, vdb: VectorDatabase):
         # 1. Initialize the LLM
         # temperature=0 is critical for strict data extraction
         self.llm = OllamaLLM(model="llama3.2", temperature=0)
-        test_db_dir = "test_chroma_db"
+        #test_db_dir = "test_chroma_db"
         # 2. Connect to the DB
-        self.db = VectorDatabase(test_db_dir)
+        self.db = vdb
 
+
+
+
+    def analyze_single_field(self, company_name: str, field: str) -> str:
+        """
+        Extracts a single data point with high precision.
+        """
+        # 1. TARGETED RETRIEVAL
+        # We search for "Apple Revenue" instead of just "Apple".
+        #  we should  get the specific paragraph about revenue.
+        specific_query = f"{company_name} {field}"
+        print(f"   🔎 Zooming in on: '{specific_query}'...")
+        
+        docs = self.db.retrieve(query=specific_query, k=3) # We only need 2 chunks for 1 fact not 6!
+        
+        if not docs:
+            return "N/A"
+            
+        context_text = "\n\n".join([d.page_content for d in docs])
+        
+        # 2. SIMPLE PROMPT
+        # No complex instructions. just "Find X". avoids reaching context limit
+        template_text = """
+        Based ONLY on the context below, extract the value for: {field}
+        
+        Context:
+        {context}
+        
+        Instructions:
+        - return only the value found for field
+        - do not write any sentances or explanation
+        - If not found, write 'N/A'.
+        """
+        
+        prompt = ChatPromptTemplate.from_template(template_text)
+        chain = prompt | self.llm
+        
+        # 3. EXECUTE
+        response = chain.invoke({
+            "context": context_text, 
+            "field": field
+        })
+        
+        return response.strip()
+        
+    
+    
+
+    
     def generate_prompt(self, target_fields: list[str]) -> ChatPromptTemplate:
         """
         Dynamically constructs a prompt based on the specific fields the user wants.
@@ -34,8 +83,8 @@ class AnalystAgent:
         --- INSTRUCTIONS ---
         1. Return the values in a single line, separated by pipes (|).
         2. Follow the exact order of the list above.
-        3. If a piece of information is NOT found in the context, write 'N/A' for that field.
-        4. Do NOT write any introduction, explanation, or extra text. Output ONLY the values.
+        3. If a piece of information is NOT found in the context, write 'N/A' for that field Do NOT repeat previous values..
+        4. Do NOT write any introduction, explanation, or extra text. Output ONLY the values. 
         5. Do NOT format as Markdown.
         
         Example Output for 3 fields:
@@ -85,7 +134,7 @@ class AnalystAgent:
         # Step A: Retrieve Context
         # We search specifically for the company name to get its relevant chunks
         print(f"🤖 Agent is analyzing: {company_name}...")
-        docs = self.db.retrieve(query=company_name, k=3)
+        docs = self.db.retrieve(query=company_name, k=6)
         
         if not docs:
             print("❌ No documents found. Returning empty results.")
@@ -100,6 +149,11 @@ class AnalystAgent:
         
         # Step C: Execute
         raw_response = chain.invoke({"context": context_text})
+
+        # ----------------- DEBUG FIELD -----------------
+        print(f"\n🐛 DEBUG RAW OUTPUT for {company_name}:")
+        print(f"'{raw_response}'")
+        print("-" * 20)
         
         # Step D: Parse
         return self._parse_response(raw_response, target_fields)
@@ -113,8 +167,10 @@ if __name__ == "__main__":
     print("🧪 STARTING TEST: Full Analyst Pipeline\n")
     
     # 1. Setup
-   
-    agent = AnalystAgent()
+    test_db_dir = "test_chroma_db"
+        #make sure to use param
+    vdb = VectorDatabase(test_db_dir)
+    agent = AnalystAgent(vdb)
     
     # Note: This relies on the data we loaded in Ticket 3/Test Scripts.
     # If your DB is empty, run 'src/database.py' first to populate dummy data.
@@ -122,7 +178,7 @@ if __name__ == "__main__":
     # 2. Define Request
     # (from our dummy data)
     test_company = "Apex Technologies"
-    test_fields = ["Revenue", "CEO", "Missing Field"]
+    test_fields = ["Revenue", "CEO"]
     
     # 3. Run Analysis
     try:

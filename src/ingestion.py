@@ -1,8 +1,11 @@
 
-
+import re
 import pathlib
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
+
+
+
 
 def load_and_chunk_documents(data_dir: str = "data/raw_docs") -> list[Document]:
     """
@@ -64,6 +67,96 @@ def load_and_chunk_documents(data_dir: str = "data/raw_docs") -> list[Document]:
             print(f"❌ Error loading {file_path.name}: {e}")
 
     return documents
+
+def load_and_chunk_documents_MD_tagging(data_dir: str) -> list[Document]:
+    """
+    Loads .txt files from the specified directory and splits them into chunks
+    with enriched metadata tags.
+    """
+    
+    # 1. Setup Pathlib
+    path = pathlib.Path(data_dir)
+    
+    if not path.exists():
+        raise FileNotFoundError(f"The directory '{path}' does not exist.")
+    
+    documents = []
+    
+    # 2. Define the Splitter
+    # Keeping your larger chunk settings to prevent context fragmentation
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=2000,
+        chunk_overlap=400,
+        length_function=len,
+        separators=["\n\n", "\n", ".", " "],
+        is_separator_regex=False,
+    )
+    
+    print(f"📂 Scanning directory: {path.resolve()}")
+
+    # 3. Iterate through all .txt files
+    for file_path in path.glob("*.txt"):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                text_content = f.read()
+            
+            if not text_content.strip():
+                print(f"⚠️  Skipping empty file: {file_path.name}")
+                continue
+
+            # --- NEW METADATA ENRICHMENT LOGIC ---
+            # We look at the first 1000 chars to identify the company/date
+            header_text = text_content[:1000]
+            
+            # Default metadata
+            meta = {"source": file_path.name}
+            
+            # A. Detect Company
+            if "Apex Technologies" in header_text:
+                meta["company"] = "Apex Technologies"
+                meta["ticker"] = "APX"
+            elif "GreenField Power" in header_text:
+                meta["company"] = "GreenField Power"
+                meta["ticker"] = "GPWR"
+            elif "OmniMarkets" in header_text:
+                meta["company"] = "OmniMarkets Global Group"
+                meta["ticker"] = "OMG"
+            else:
+                meta["company"] = "Unknown"
+            
+            # B. Detect Year (looks for 2024, 2025, etc.)
+            year_match = re.search(r"\b(202[4-9])\b", header_text)
+            if year_match:
+                meta["year"] = year_match.group(1)
+            
+            # C. Detect Doc Type
+            if "Quarterly" in header_text or "10-Q" in header_text:
+                meta["doc_type"] = "10-Q"
+            elif "Annual" in header_text or "10-K" in header_text:
+                meta["doc_type"] = "10-K"
+            
+            # -------------------------------------
+
+            # 4. Create Document with Rich Metadata
+            # The splitter will automatically copy this metadata to every chunk!
+            raw_doc = Document(
+                page_content=text_content,
+                metadata=meta
+            )
+            
+            # Split the single large document into smaller chunks
+            chunks = splitter.split_documents([raw_doc])
+            
+            documents.extend(chunks)
+            
+            print(f"✅ Loaded {file_path.name}: {len(chunks)} chunks. Tags: {meta}")
+            
+        except Exception as e:
+            print(f"❌ Error loading {file_path.name}: {e}")
+
+    return documents
+
+
 
 # --- TICKET TEST BLOCK ---
 
