@@ -7,7 +7,7 @@ from langchain_core.documents import Document
 
 
 
-def load_and_chunk_documents(data_dir: str = "data/raw_docs") -> list[Document]:
+def load_and_chunk_documents(data_dir: str = "data/txt_files_med_test") -> list[Document]:
     """
     Loads .txt files from the specified directory and splits them into chunks.
     
