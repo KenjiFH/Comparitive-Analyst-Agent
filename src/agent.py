@@ -76,8 +76,8 @@ class AnalystAgent:
         template_text = """
         You are an expert financial analyst. Your goal is to extract specific data points from the provided context.
         
-        Based ONLY on the context provided below, extract the following information:
-        
+        Based on ONLY the context provided below, extract the following information:
+        if a company is given that is not included in the context, write N/A for all fields
         {field_list_str}
         
         --- INSTRUCTIONS ---
@@ -86,9 +86,12 @@ class AnalystAgent:
         3. If a piece of information is NOT found in the context, write 'N/A' for that field Do NOT repeat previous values..
         4. Do NOT write any introduction, explanation, or extra text. Output ONLY the values. 
         5. Do NOT format as Markdown.
+    
+
         
         Example Output for 3 fields:
         $45 Billion | Tim Cook | Supply Chain Disruptions
+
         
         Context:
         {context}
