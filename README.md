@@ -32,3 +32,18 @@ Designed with a **"Clean Room" Architecture** to prevent data leakage between co
     ├── agent.py           # Logic for prompting the LLM
     ├── database.py        # ChromaDB connection & settings
     └── ingestion.py       # Text chunking & metadata tagging logic
+
+
+# Clone repository
+git clone <your-repo-url>
+cd financial-analyst-agent
+
+# Create virtual environment (optional but recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+
+streamlit run app.py
