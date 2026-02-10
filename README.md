@@ -2,12 +2,11 @@
 
 A local RAG (Retrieval-Augmented Generation) tool that ingests financial reports and extracts structured data (Revenue, CEO, Risks, Guidance) using **Llama 3**, **LangChain**, and **ChromaDB**.
 
-Designed with a **"Clean Room" Architecture** to prevent data leakage between companies and handle Windows file locking issues.
+
 
 ## 🚀 Features
 
 * **Local & Private:** Runs entirely on your machine using Ollama (no API keys required).
-* **"Clean Room" Analysis:** Uses a subprocess pattern to destroy and recreate the vector database for every ingestion run, ensuring zero context bleeding between companies.
 * **Structured Extraction:** Converts unstructured text into structured CSV data.
 * **Streamlit UI:** Interactive dashboard for uploading data, monitoring progress, and downloading results.
 * **Robust Error Handling:** Automatically handles "Read-Only" file locks common with local databases on Windows.
