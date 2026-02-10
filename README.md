@@ -20,19 +20,13 @@ Designed with a **"Clean Room" Architecture** to prevent data leakage between co
 * **Vector Database:** ChromaDB
 * **Language:** Python 3.10+
 
-## 📦 Project Structure
+⚡ Setup & Usage
+Prerequisites
+Python 3.10+ installed.
 
-```text
-├── app.py                 # Main Streamlit dashboard
-├── ingest_worker.py       # Subprocess for safe DB deletion & ingestion
-├── requirements.txt       # Python dependencies
-├── data/                  # Drop your .txt financial reports here
-│   └── txt_files_med/     
-└── src/
-    ├── agent.py           # Logic for prompting the LLM
-    ├── database.py        # ChromaDB connection & settings
-    └── ingestion.py       # Text chunking & metadata tagging logic
+Ollama installed and running.
 
+Pull the model: ollama pull llama3.2
 
 # Clone repository
 git clone <your-repo-url>
@@ -47,3 +41,19 @@ pip install -r requirements.txt
 
 
 streamlit run app.py
+
+## 📦 Project Structure
+
+```text
+├── app.py                 # Main Streamlit dashboard
+├── ingest_worker.py       # Subprocess for safe DB deletion & ingestion
+├── requirements.txt       # Python dependencies
+├── data/                  # Drop your .txt financial reports here
+│   └── txt_files_med/     
+└── src/
+    ├── agent.py           # Logic for prompting the LLM
+    ├── database.py        # ChromaDB connection & settings
+    └── ingestion.py       # Text chunking & metadata tagging logic
+```text
+
+
