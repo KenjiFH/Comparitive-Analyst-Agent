@@ -20,7 +20,9 @@ Designed with a **"Clean Room" Architecture** to prevent data leakage between co
 * **Vector Database:** ChromaDB
 * **Language:** Python 3.10+
 
-⚡ Setup & Usage
+
+
+⚡️Setup & Usage
 Prerequisites
 Python 3.10+ installed.
 
