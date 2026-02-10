@@ -1,9 +1,10 @@
 Company,Revenue,CEO,Primary Risks,Future Projections
-Apex Technologies,$4.2 billion,Elena Rostova,"Supply Chain & Hardware Constraints: 10% 
-Regulatory & Antitrust Scrutiny: N/A
-Cybersecurity: N/A",$4.2 billion
-OmniMarkets Global Group,$88.5 billion,CEO: David Chen,"Primary Risks: 
-- Rising labor costs
-- Shrinkage (theft)",N/A
-GreenField Power,$12.4 billion,Dr. Amara Singh,"Primary Risks: 
-1. 15%",N/A
+Apex Technologies,$2.8 billion,Elena Rostova,"Supply Chain & Hardware Constraints: 
+10%",N/A
+OmniMarkets Global Group,$88.5 billion,David Chen,"Supply Chain & Hardware Constraints: Our ability to meet the demand for AI compute is heavily dependent on the availability of high-performance GPUs and advanced memory chips. We are currently facing a significant shortage of H100-class components from our primary suppliers. If these shortages persist beyond Q4 2025, our revenue growth in the Cloud segment will be materially impacted.
+
+Regulatory & Antitrust Scrutiny: Apex is currently subject to an ongoing investigation by the European Commission regarding potential anti-competitive practices in our cloud marketplace. While we believe our practices are lawful, an adverse ruling could result in substantial fines (up to 10% of global turnover) and forced structural changes to our business model.
+
+Primary Risks:
+N/A",N/A
+GreenField Power,$12.4 billion,CEO: Dr. Amara Singh,$10 billion,N/A

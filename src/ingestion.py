@@ -30,8 +30,8 @@ def load_and_chunk_documents(data_dir: str = "data/txt_files_med_test") -> list[
     # 2. Define the Splitter
     # 1000/200 is a standard "Goldilocks" zone for keeping context intact
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=200,
+        chunk_size=2000,
+        chunk_overlap=400,
         length_function=len,
         is_separator_regex=False,
     )
