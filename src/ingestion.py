@@ -85,8 +85,8 @@ def load_and_chunk_documents_MD_tagging(data_dir: str) -> list[Document]:
     # 2. Define the Splitter
     # Keeping your larger chunk settings to prevent context fragmentation
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=2000,
-        chunk_overlap=400,
+        chunk_size=1000,
+        chunk_overlap=200,
         length_function=len,
         separators=["\n\n", "\n", ".", " "],
         is_separator_regex=False,
