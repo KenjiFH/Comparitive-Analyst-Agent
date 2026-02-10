@@ -22,7 +22,7 @@ Designed with a **"Clean Room" Architecture** to prevent data leakage between co
 
 
 
-⚡️Setup & Usage
+##⚡️Setup & Usage
 Prerequisites
 Python 3.10+ installed.
 
