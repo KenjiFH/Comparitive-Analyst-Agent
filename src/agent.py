@@ -137,7 +137,7 @@ class AnalystAgent:
         # Step A: Retrieve Context
         # We search specifically for the company name to get its relevant chunks
         print(f"🤖 Agent is analyzing: {company_name}...")
-        docs = self.db.retrieve(query=company_name, k=6)
+        docs = self.db.retrieve(query=company_name, k=9)
         
         if not docs:
             print("❌ No documents found. Returning empty results.")
