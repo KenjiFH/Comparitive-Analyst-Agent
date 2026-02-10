@@ -31,7 +31,7 @@ Ollama installed and running.
 Pull the model: ollama pull llama3.2
 
 # Clone repository
-git clone <your-repo-url>
+git clone https://github.com/KenjiFH/Comparitive-Analyst-Agent
 cd financial-analyst-agent
 
 # Create virtual environment (optional but recommended)
