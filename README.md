@@ -45,7 +45,7 @@ streamlit run app.py
 
 ## 📦 Project Structure
 
-![Architecture diagram](https://github.com/user-attachments/files/25308976/Architecture.diagram.pdf)
+![Architecture diagram](./Architecture diagram.pdf)
 
 
 ```text
