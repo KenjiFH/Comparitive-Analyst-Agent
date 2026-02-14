@@ -45,6 +45,8 @@ streamlit run app.py
 
 ## 📦 Project Structure
 
+[Architecture diagram.pdf](https://github.com/user-attachments/files/25308976/Architecture.diagram.pdf)
+
 ```text
 ├── app.py                 # Main Streamlit dashboard
 ├── ingest_worker.py       # Subprocess for safe DB deletion & ingestion
