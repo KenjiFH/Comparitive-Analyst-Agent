@@ -5,7 +5,7 @@ A local RAG (Retrieval-Augmented Generation) tool that ingests financial reports
 
 
 
-![Architecture diagram](./Architecture diagram.PDF)
+![Architecture diagram](./Architecture-diagram.PDF)
 
 
 ## 🚀 Features
