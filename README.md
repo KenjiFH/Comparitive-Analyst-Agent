@@ -3,20 +3,7 @@
 A local RAG (Retrieval-Augmented Generation) tool that ingests financial reports and extracts structured data (Revenue, CEO, Risks, Guidance) using **Llama 3**, **LangChain**, and **ChromaDB**.
 
 
-## 📦 Project Structure
 
-
-```text
-├── app.py                 # Main Streamlit dashboard
-├── ingest_worker.py       # Subprocess for safe DB deletion & ingestion
-├── requirements.txt       # Python dependencies
-├── data/                  # Drop your .txt financial reports here
-│   └── txt_files_med/     
-└── src/
-    ├── agent.py           # Logic for prompting the LLM
-    ├── database.py        # ChromaDB connection & settings
-    └── ingestion.py       # Text chunking & metadata tagging logic
-```text
 
 ![Architecture diagram](./Architecture diagram.PDF)
 
@@ -59,6 +46,21 @@ pip install -r requirements.txt
 
 
 streamlit run app.py
+
+## 📦 Project Structure
+
+
+```text
+├── app.py                 # Main Streamlit dashboard
+├── ingest_worker.py       # Subprocess for safe DB deletion & ingestion
+├── requirements.txt       # Python dependencies
+├── data/                  # Drop your .txt financial reports here
+│   └── txt_files_med/     
+└── src/
+    ├── agent.py           # Logic for prompting the LLM
+    ├── database.py        # ChromaDB connection & settings
+    └── ingestion.py       # Text chunking & metadata tagging logic
+```text
 
 
 
