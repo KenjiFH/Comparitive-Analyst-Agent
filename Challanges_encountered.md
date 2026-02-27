@@ -1,48 +1,27 @@
-This is the million-dollar enterprise reality. Very few Fortune 500 clients are 100% Azure. They almost always have their CRM in Salesforce, a legacy data lake in AWS (S3), and their identity/compute in Azure.
+# 🚧 Project Challenges & Technical Mitigations
 
-If you walk into an Avanade interview and pitch a "rip and replace" migration to get everything into Azure before deploying AI, you will lose the room. That is a three-year timeline, which kills the "AI Acceleration" mandate.
+Building a local RAG (Retrieval-Augmented Generation) pipeline for financial reports surfaced several engineering hurdles, transitioning the project from a simple script to a robust, fault-tolerant application. Below is a summary of the primary challenges and how they were solved.
 
-The winning architectural pitch is: **"Azure as the Brain, Multi-Cloud as the Limbs."** Here is how you update your Figma diagram and your script to show that you understand multi-cloud data gravity, while still making Microsoft/Azure the hero of the story.
+## 1. State Leakage & Vector Pollution
+* **The Challenge:** When analyzing multiple companies sequentially, the agent would occasionally "hallucinate" data, returning Company A's CEO when asked about Company B. This occurred because the vector database was retrieving the absolute best mathematical match from the entire document library, regardless of the target company.
+* **The Mitigation:** * **Metadata Tagging:** Implemented an enrichment step during ingestion to automatically tag every text chunk with metadata (`company`, `year`).
+  * **"Clean Room" Architecture:** Refactored the application loop to destroy and re-initialize the `AnalystAgent` for every new company analyzed, guaranteeing zero variable carry-over or state leakage between iterations.
 
-### Updating the Diagram (The Figma Tweaks)
+## 2. Windows File Locking (The "Zombie Process" Error)
+* **The Challenge:** When attempting to clear and re-ingest data via the Streamlit UI, the application crashed with a `PermissionError: [WinError 5] Access is denied`. Streamlit's persistent background process was keeping the ChromaDB SQLite files locked, preventing the `shutil.rmtree()` command from executing.
+* **The Mitigation:** * **Subprocess Pattern:** Abstracted the database deletion and ingestion logic into a completely separate script (`ingest_worker.py`). 
+  * Streamlit now triggers this script via Python's `subprocess` module. When the worker script finishes, the operating system forcibly closes all file handles, safely bypassing the Streamlit lock without requiring complex garbage collection.
 
-You keep the same 4-Layer structure we built, but you modify the **Governance (Layer 2)** and **Legacy Integration (Layer 4)** layers to show cross-cloud mastery.
+## 3. The "Blender" Effect (Tabular Data Loss)
+* **The Challenge:** Financial documents rely heavily on tables. The standard `RecursiveCharacterTextSplitter` reads 2D tables left-to-right, blending headers (e.g., "Q3", "Q4") with values (e.g., "$10M", "$15M") into a single, contextless string.
+* **The Mitigation:** * **Immediate Fix:** Manually transformed tables in the raw `.txt` files into narrative sentences. 
+  * **Architectural Tradeoff:** Acknowledged that standard text splitting is 1-Dimensional. Future iterations require Layout-Aware Parsing (e.g., LlamaParse or Unstructured.io) to preserve structural integrity.
 
-**1. The Governance Layer: Federated Identity**
+## 4. Context Bleeding (Monolithic Prompt Failure)
+* **The Challenge:** Initially, the LLM was prompted to extract four different fields (Revenue, CEO, Guidance, Risks) in a single request. The high cognitive load caused the LLM's attention to decay; it frequently hallucinated the final fields or repeated previous answers.
+* **The Mitigation:** * **Sequential Extraction:** Deconstructed the monolithic prompt into targeted, single-field queries. The application now loops through the requested fields (e.g., querying *only* for Revenue, then *only* for the CEO), sacrificing a bit of speed for drastically improved accuracy.
 
-- **The Visual:** Inside the API Gateway box, next to Entra ID, add the word **"Federated"**.
-- **The GM Callout Label:** _"Zero-Trust Federation: Entra ID acts as the supreme identity provider, using Single Sign-On (SSO) to govern access across Azure, AWS, and Salesforce."_
-
-**2. The Legacy Integration Layer: Multi-Cloud Adapters**
-
-- **The Visual:** Instead of generic database icons at the bottom, draw three distinct pillars:
-- A blue cloud icon for **Azure (SQL/SharePoint)**
-- An orange cloud icon for **AWS (S3 Data Lake)**
-- A blue cloud icon for **Salesforce (CRM)**
-
-- **The GM Callout Label:** _"Data Gravity Respected: We do not move the data. Semantic Kernel uses dedicated API connectors to read AWS and Salesforce data precisely where it lives."_
-
----
-
-### The Pitch: Selling Multi-Cloud to an Avanade GM
-
-When you present this updated architecture, you lean into the fact that Avanade wants to drive Azure consumption, but you are smart enough to do it without fighting the client's existing infrastructure.
-
-**The Script:**
-_"In a perfect world, the client’s data is all in Microsoft Dataverse or Azure SQL. But the reality of this environment is that their customer data is in Salesforce and their historical logs are sitting in an AWS S3 bucket._
-
-_We are not going to halt the AI rollout for a three-year data migration. We respect **Data Gravity**—we leave the data where it is. Instead, we position **Azure as the Intelligence Control Plane**._
-
-_Here is how it works: When a user asks a cross-platform question—like 'Compare our Q3 Salesforce pipeline against the historical AWS supply chain data'—the Azure API Gateway authenticates the user via Federated Entra ID. The Semantic Kernel in Azure acts as the diplomat. It fires one secure API call to Salesforce via MuleSoft, and another to the AWS API Gateway. It pulls only the required tokens of data into Azure OpenAI’s stateless memory, synthesizes the answer, and drops the data._
-
-_This allows us to deploy an Azure-native AI solution in weeks, proving immediate ROI, while securely orchestrating across their entire multi-cloud estate."_
-
----
-
-### Why this is a "Mic Drop" Moment
-
-1. **You solve the "Data Silo" pain:** The biggest headache for executives is that Salesforce doesn't talk to AWS. Your AI acts as the universal translator.
-2. **You protect the Avanade objective:** You aren't advocating for AWS compute. You are routing all the high-value, billable AI compute through Azure OpenAI and Semantic Kernel. You are just treating AWS and Salesforce as "dumb storage."
-3. **You show maturity:** Junior developers try to build one monolithic database. Enterprise architects build API bridges.
-
-**The Orchestrator's Check:** This multi-cloud pivot introduces a highly specific interview question: _How does an Azure service securely authenticate into an AWS or Salesforce environment without hardcoding passwords?_ Would you like to do a quick 5-minute technical drill on how to explain **OAuth 2.0 and OIDC (OpenID Connect)** so you can defend this multi-cloud bridge if they press you on the security mechanics?
+## 5. Context Flooding & "Lost in the Middle"
+* **The Challenge:** To prevent the agent from missing information at the end of documents (like "Forward Guidance"), the chunk size was increased to 2000 characters and the retrieval count (`k`) was raised to 9. This resulted in feeding the LLM up to 4,500+ tokens of text. The model became overwhelmed by the noise and hallucinated numbers.
+* **The Mitigation:** * **Optimized Hyperparameters:** Reduced the retrieval parameters back to a denser ratio. By prioritizing high-quality, targeted retrieval over sheer volume, the LLM maintains its attention span.
+  * **Query Expansion:** Mapped generic terms like "Revenue" to specific financial synonyms ("Total Net Sales") in the prompt to force the database to pull the exact number rather than generic policy paragraphs (Semantic Drift).
