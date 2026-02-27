@@ -1,6 +1,6 @@
 
 
----
+
 
 ```markdown
 # 🤖 Local AI Financial Analyst
@@ -91,7 +91,7 @@ streamlit run app.py
 
 ```
 
----
+
 
 ## 📦 Project Structure
 
