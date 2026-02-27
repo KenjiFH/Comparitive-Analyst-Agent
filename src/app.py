@@ -82,6 +82,7 @@ if st.button("🚀 Start Analysis", type="primary"):
                 
             except subprocess.CalledProcessError as e:
                 status.update(label="❌ Ingestion Failed", state="error")
+                st.error(e)
                 st.error("The worker script crashed.")
                 st.error(e.stderr) # Show the error log
                 st.stop() # Stop execution here
