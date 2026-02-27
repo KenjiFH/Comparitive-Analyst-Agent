@@ -2,7 +2,7 @@
 
 
 
-```markdown
+
 # 🤖 Local AI Financial Analyst
 
 A local RAG (Retrieval-Augmented Generation) tool designed to ingest unstructured financial reports (`.txt` files) and extract structured, actionable business intelligence (Revenue, CEO, Risks, Guidance). 
@@ -52,7 +52,9 @@ ollama pull llama3.2
 Clone this project to your local machine and navigate into the directory:
 
 ```bash
+
 git clone [https://github.com/KenjiFH/Comparitive-Analyst-Agent](https://github.com/KenjiFH/Comparitive-Analyst-Agent)
+
 cd Comparitive-Analyst-Agent
 
 ```
